@@ -129,13 +129,16 @@ function filterProjects() {
 
 // Set up filter button click handlers
 function setupFilterButtons() {
-    filterButtons.forEach(button => {
+    // Need to query the buttons again in case new ones were added by letter-navigation.js
+    const allFilterButtons = document.querySelectorAll('.filter-btn');
+    
+    allFilterButtons.forEach(button => {
         // Skip the toggle letter nav button
         if (button.id === 'toggle-letter-nav') return;
         
         button.addEventListener('click', () => {
             // Update active state
-            filterButtons.forEach(btn => {
+            allFilterButtons.forEach(btn => {
                 if (btn.id !== 'toggle-letter-nav') {
                     btn.classList.remove('active', 'bg-bulgaria', 'text-white');
                     btn.classList.add('bg-white', 'text-gray-700');

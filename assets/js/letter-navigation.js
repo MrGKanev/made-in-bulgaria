@@ -5,18 +5,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const letters = alphabet.split('');
     
-    // Create toggle button and add it to the filters section
-    const filtersSection = document.querySelector('.py-6.bg-gray-50 .container');
-    const toggleContainer = document.createElement('div');
-    toggleContainer.className = 'flex justify-center mt-4';
+    // Create toggle button and add it directly to the filters section with other filters
+    const filtersContainer = document.querySelector('.py-6.bg-gray-50 .container .flex.flex-wrap');
     
     const toggleButton = document.createElement('button');
-    toggleButton.className = 'filter-btn bg-white text-gray-700 px-4 py-2 rounded-md shadow-sm flex items-center';
-    toggleButton.innerHTML = '<i class="fas fa-font mr-2"></i> A-Z Navigation';
+    toggleButton.className = 'filter-btn bg-white text-gray-700 px-4 py-2 rounded-md shadow-sm';
+    toggleButton.innerHTML = '<i class="fas fa-font mr-1"></i> A-Z Navigation';
     toggleButton.id = 'toggle-letter-nav';
     
-    toggleContainer.appendChild(toggleButton);
-    filtersSection.appendChild(toggleContainer);
+    filtersContainer.appendChild(toggleButton);
     
     // Create navigation container
     const navContainer = document.createElement('div');
@@ -130,6 +127,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
-  // Initialize after projects are loaded (adjusted timing)
-  setTimeout(createLetterNavigation, 1000);
+  // Initialize immediately when DOM loads
+  createLetterNavigation();
 });
