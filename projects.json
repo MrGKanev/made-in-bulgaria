@@ -1,0 +1,136 @@
+{
+  "projects": [
+    {
+      "id": 1,
+      "name": "Telerik",
+      "description": "Founded in 2002, Telerik is one of Bulgaria's most successful software companies, known for its UI components and developer tools.",
+      "category": "company",
+      "url": "https://www.telerik.com",
+      "github": "https://github.com/telerik",
+      "image": "https://via.placeholder.com/300x200",
+      "stars": 2500,
+      "owner": "Progress Software"
+    },
+    {
+      "id": 2,
+      "name": "Chaos Group",
+      "description": "Creator of V-Ray, a 3D rendering software used in architecture, design, and visual effects.",
+      "category": "company",
+      "url": "https://www.chaosgroup.com",
+      "github": "",
+      "image": "https://via.placeholder.com/300x200",
+      "stars": 0,
+      "owner": "Chaos Group"
+    },
+    {
+      "id": 3,
+      "name": "Hyperscience",
+      "description": "Develops automation software using machine learning for data entry and document processing.",
+      "category": "company",
+      "url": "https://www.hyperscience.com",
+      "github": "https://github.com/hyperscience",
+      "image": "https://via.placeholder.com/300x200",
+      "stars": 320,
+      "owner": "Hyperscience"
+    },
+    {
+      "id": 4,
+      "name": "NativeScript",
+      "description": "An open-source framework for building native mobile apps with Angular, Vue.js, TypeScript, or JavaScript.",
+      "category": "open-source",
+      "url": "https://nativescript.org",
+      "github": "https://github.com/NativeScript/NativeScript",
+      "image": "https://via.placeholder.com/300x200",
+      "stars": 21500,
+      "owner": "Progress Software"
+    },
+    {
+      "id": 5,
+      "name": "Kendo UI",
+      "description": "A comprehensive HTML5/JavaScript framework for modern web and mobile app development.",
+      "category": "dev-tool",
+      "url": "https://www.telerik.com/kendo-ui",
+      "github": "https://github.com/telerik/kendo-ui-core",
+      "image": "https://via.placeholder.com/300x200",
+      "stars": 1850,
+      "owner": "Telerik"
+    },
+    {
+      "id": 6,
+      "name": "EventStore",
+      "description": "The open-source, functional database with Complex Event Processing in JavaScript.",
+      "category": "open-source",
+      "url": "https://www.eventstore.com",
+      "github": "https://github.com/EventStore/EventStore",
+      "image": "https://via.placeholder.com/300x200",
+      "stars": 3800,
+      "owner": "Event Store Ltd"
+    },
+    {
+      "id": 7,
+      "name": "SoftUni Judge",
+      "description": "An automated testing system used to judge programming contests and homework assignments.",
+      "category": "open-source",
+      "url": "https://judge.softuni.org",
+      "github": "https://github.com/SoftUni/SoftUni-Judge",
+      "image": "https://via.placeholder.com/300x200",
+      "stars": 210,
+      "owner": "SoftUni"
+    },
+    {
+      "id": 8,
+      "name": "Kinvey",
+      "description": "Backend as a service (BaaS) platform for mobile, web, and IoT applications.",
+      "category": "dev-tool",
+      "url": "https://www.progress.com/kinvey",
+      "github": "https://github.com/Kinvey/js-sdk",
+      "image": "https://via.placeholder.com/300x200",
+      "stars": 540,
+      "owner": "Progress Software"
+    },
+    {
+      "id": 9,
+      "name": "Imagga",
+      "description": "Image recognition API for automated tagging, categorization and visual search capabilities.",
+      "category": "dev-tool",
+      "url": "https://imagga.com",
+      "github": "",
+      "image": "https://via.placeholder.com/300x200",
+      "stars": 0,
+      "owner": "Imagga Technologies"
+    },
+    {
+      "id": 10,
+      "name": "Ontotext GraphDB",
+      "description": "Enterprise-ready semantic graph database, compliant with W3C standards.",
+      "category": "dev-tool",
+      "url": "https://www.ontotext.com/products/graphdb/",
+      "github": "https://github.com/Ontotext-AD/graphdb-examples",
+      "image": "https://via.placeholder.com/300x200",
+      "stars": 180,
+      "owner": "Ontotext"
+    },
+    {
+      "id": 11,
+      "name": "Gtmhub",
+      "description": "OKR (Objectives and Key Results) management platform for aligning and tracking company goals.",
+      "category": "saas",
+      "url": "https://www.gtmhub.com",
+      "github": "",
+      "image": "https://via.placeholder.com/300x200",
+      "stars": 0,
+      "owner": "Gtmhub"
+    },
+    {
+      "id": 12,
+      "name": "Enhancv",
+      "description": "Resume builder platform that helps professionals create effective and visually appealing resumes.",
+      "category": "app",
+      "url": "https://enhancv.com",
+      "github": "",
+      "image": "https://via.placeholder.com/300x200",
+      "stars": 0,
+      "owner": "Enhancv"
+    }
+  ]
+}

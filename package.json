@@ -1,0 +1,22 @@
+{
+  "name": "made-in-bulgaria",
+  "version": "1.0.0",
+  "description": "A showcase of Bulgarian tech projects and companies",
+  "main": "index.js",
+  "scripts": {
+    "generate": "node generate.js",
+    "start": "node generate.js && npx serve"
+  },
+  "keywords": [
+    "bulgaria",
+    "tech",
+    "projects",
+    "open-source",
+    "showcase"
+  ],
+  "author": "gkanev.com",
+  "license": "MIT",
+  "dependencies": {
+    "serve": "^14.2.0"
+  }
+}
