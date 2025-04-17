@@ -2,7 +2,7 @@
 const projectsGrid = document.getElementById('projects-grid');
 const searchInput = document.getElementById('search-input');
 const filterButtons = document.querySelectorAll('.filter-btn');
-const submitButton = document.getElementById('submit-project');
+// Submit modal elements are no longer needed since we're linking to GitHub
 const submitModal = document.getElementById('submit-modal');
 const closeModal = document.getElementById('close-modal');
 const projectForm = document.getElementById('project-form');
@@ -153,50 +153,11 @@ function setupFilterButtons() {
     });
 }
 
-// Set up modal functionality
+// Set up modal functionality - keeping this for reference but it's no longer used
+// The submit button now links directly to GitHub
 function setupModal() {
-    submitButton.addEventListener('click', () => {
-        submitModal.classList.remove('hidden');
-    });
-    
-    closeModal.addEventListener('click', () => {
-        submitModal.classList.add('hidden');
-    });
-    
-    // Close modal when clicking outside
-    submitModal.addEventListener('click', (e) => {
-        if (e.target === submitModal) {
-            submitModal.classList.add('hidden');
-        }
-    });
-    
-    // Form submission
-    projectForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        
-        // Get form data
-        const newProject = {
-            id: projectsData.length + 1,
-            name: document.getElementById('project-name').value,
-            description: document.getElementById('project-description').value,
-            url: document.getElementById('project-url').value,
-            github: document.getElementById('project-github').value,
-            category: document.getElementById('project-category').value,
-            github_username: document.getElementById('project-github').value.split('/').pop(),
-            stars: 0,
-            owner: "Submitted Project", // In a real app, this would be the user's organization
-            status: "active"
-        };
-        
-        // In a real application, this would send data to a server
-        alert('Project submitted successfully! It will be reviewed soon.');
-        submitModal.classList.add('hidden');
-        projectForm.reset();
-        
-        // Optionally add to local data for immediate display
-        // projectsData.push(newProject);
-        // filterProjects();
-    });
+    // Code removed as modal is no longer needed
+    console.log("Modal setup skipped - using GitHub for submissions");
 }
 
 // Initialize the application
@@ -220,8 +181,7 @@ async function init() {
     // Set up filter buttons
     setupFilterButtons();
     
-    // Set up modal
-    setupModal();
+    // Modal setup skipped as we're now linking directly to GitHub
 }
 
 // Start the application when the DOM is loaded
