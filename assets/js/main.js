@@ -97,7 +97,7 @@ function renderProjects(projects) {
 // Filter projects by category and search term
 function filterProjects() {
     const searchTerm = searchInput.value.toLowerCase();
-    const activeFilter = document.querySelector('.filter-btn.active').getAttribute('data-filter');
+    const activeFilter = document.querySelector('.filter-btn.active:not(#toggle-letter-nav)').getAttribute('data-filter');
     
     let filteredProjects = projectsData;
     
@@ -116,16 +116,30 @@ function filterProjects() {
     }
     
     renderProjects(filteredProjects);
+    
+    // If letter navigation is active, reorganize by letter
+    const letterNav = document.getElementById('letter-navigation');
+    if (letterNav && !letterNav.classList.contains('hidden')) {
+        // If we're using a module import for letter navigation
+        if (typeof organizeProjectsByLetter === 'function') {
+            organizeProjectsByLetter();
+        }
+    }
 }
 
 // Set up filter button click handlers
 function setupFilterButtons() {
     filterButtons.forEach(button => {
+        // Skip the toggle letter nav button
+        if (button.id === 'toggle-letter-nav') return;
+        
         button.addEventListener('click', () => {
             // Update active state
             filterButtons.forEach(btn => {
-                btn.classList.remove('active', 'bg-bulgaria', 'text-white');
-                btn.classList.add('bg-white', 'text-gray-700');
+                if (btn.id !== 'toggle-letter-nav') {
+                    btn.classList.remove('active', 'bg-bulgaria', 'text-white');
+                    btn.classList.add('bg-white', 'text-gray-700');
+                }
             });
             
             button.classList.add('active', 'bg-bulgaria', 'text-white');

@@ -9,7 +9,11 @@ const path = require('path');
 // Function to read the README.md file
 function readReadmeFile() {
   try {
-    const readmePath = path.join(__dirname, 'README.md');
+    // Check for both uppercase and lowercase readme files
+    let readmePath = path.join(__dirname, 'README.md');
+    if (!fs.existsSync(readmePath)) {
+      readmePath = path.join(__dirname, 'readme.md');
+    }
     return fs.readFileSync(readmePath, 'utf8');
   } catch (error) {
     console.error('Error reading README.md:', error);
@@ -88,9 +92,16 @@ function writeProjectsJson(projects) {
       projects
     };
     
-    const outputPath = path.join(__dirname, 'projects.json');
+    // Ensure the assets/js directory exists
+    const outputDir = path.join(__dirname, 'assets', 'js');
+    if (!fs.existsSync(outputDir)) {
+      fs.mkdirSync(outputDir, { recursive: true });
+    }
+    
+    // Write to the correct location
+    const outputPath = path.join(outputDir, 'projects.json');
     fs.writeFileSync(outputPath, JSON.stringify(jsonContent, null, 2), 'utf8');
-    console.log(`Successfully generated projects.json with ${projects.length} projects.`);
+    console.log(`Successfully generated assets/js/projects.json with ${projects.length} projects.`);
   } catch (error) {
     console.error('Error writing projects.json:', error);
     process.exit(1);
