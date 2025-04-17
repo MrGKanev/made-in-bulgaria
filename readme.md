@@ -1,134 +1,67 @@
-# Made in Bulgaria
+# 🇧🇬 Made In Bulgaria
 
-A showcase of innovative tech projects, open-source software, and companies made in Bulgaria.
+A curation of awesome tools and projects built by Bulgarian entrepreneurs 🔥.
 
-## Project Directory
+[A](#a) | [B](#b) | [C](#c) | [D](#d) | [E](#e) | [F](#f) | [G](#g) | [H](#h) | [I](#i) | [J](#j) | [K](#k) | [L](#l) | [M](#m) | [N](#n) | [O](#o) | [P](#p) | [Q](#q) | [R](#r) | [S](#s) | [T](#t) | [U](#u) | [V](#v) | [W](#w) | [X](#x) | [Y](#y) | [Z](#z)
 
-This README contains all the projects displayed on the Made in Bulgaria website. To add your project, follow the format below and submit a pull request.
+## C
+
+* Chaos Group V-Ray - A 3D rendering software used in architecture, design, and visual effects. **By @chaosgroup** | 🚀 Active
+
+## E
+
+* Enhancv - Resume builder platform that helps professionals create effective and visually appealing resumes. **By @enhancv** | 🚀 Active
+* EventStore - The open-source, functional database with Complex Event Processing in JavaScript. **By @EventStore** | 🚀 Active
+
+## G
+
+* Gtmhub - OKR (Objectives and Key Results) management platform for aligning and tracking company goals. **By @gtmhub** | 🚀 Active
+
+## H
+
+* Hyperscience - Automation software using machine learning for data entry and document processing. **By @hyperscience** | 🚀 Active
+
+## I
+
+* Imagga - Image recognition API for automated tagging, categorization and visual search capabilities. **By @imagga** | 🚀 Active
+
+## K
+
+* Kendo UI - A comprehensive HTML5/JavaScript framework for modern web and mobile app development. **By @telerik** | 🚀 Active
+* Kinvey - Backend as a service (BaaS) platform for mobile, web, and IoT applications. **By @Kinvey** | 🚀 Active
+
+## N
+
+* NativeScript - An open-source framework for building native mobile apps with Angular, Vue.js, TypeScript, or JavaScript. **By @NativeScript** | 🚀 Active
+
+## O
+
+* Ontotext GraphDB - Enterprise-ready semantic graph database, compliant with W3C standards. **By @Ontotext-AD** | 🚀 Active
+
+## S
+
+* SoftUni Judge - An automated testing system used to judge programming contests and homework assignments. **By @SoftUni** | 🚀 Active
+
+## T
+
+* Telerik - UI components and developer tools for web, mobile, and desktop applications. **By @telerik** | 🚀 Active
 
 ## How to Add Your Project
 
 1. Fork this repository
-2. Add your project to the appropriate section below
+2. Add your project to the appropriate alphabetical section
 3. Submit a pull request
 
-## Project Format
-
-Each project entry should use the following format:
+Use the following format:
 
 ```
-### [Project Name](https://project-url.com)
-- **Description**: A brief description of the project
-- **Category**: company|open-source|dev-tool|saas|app
-- **GitHub**: https://github.com/username/repository (if applicable, otherwise leave empty)
-- **Owner**: Organization or individual name
-- **Stars**: Number of GitHub stars (if applicable, otherwise 0)
+* Project Name - Brief description of the project. **By @githubusername** | 🚀 Active/🏁 Inactive/⚠️ Deprecated
 ```
 
-## Project List
-
-### [Telerik](https://www.telerik.com)
-
-- **Description**: Founded in 2002, Telerik is one of Bulgaria's most successful software companies, known for its UI components and developer tools.
-- **Category**: company
-- **GitHub**: <https://github.com/telerik>
-- **Owner**: Progress Software
-- **Stars**: 2500
-
-### [Chaos Group](https://www.chaosgroup.com)
-
-- **Description**: Creator of V-Ray, a 3D rendering software used in architecture, design, and visual effects.
-- **Category**: company
-- **GitHub**:
-- **Owner**: Chaos Group
-- **Stars**: 0
-
-### [Hyperscience](https://www.hyperscience.com)
-
-- **Description**: Develops automation software using machine learning for data entry and document processing.
-- **Category**: company
-- **GitHub**: <https://github.com/hyperscience>
-- **Owner**: Hyperscience
-- **Stars**: 320
-
-### [NativeScript](https://nativescript.org)
-
-- **Description**: An open-source framework for building native mobile apps with Angular, Vue.js, TypeScript, or JavaScript.
-- **Category**: open-source
-- **GitHub**: <https://github.com/NativeScript/NativeScript>
-- **Owner**: Progress Software
-- **Stars**: 21500
-
-### [Kendo UI](https://www.telerik.com/kendo-ui)
-
-- **Description**: A comprehensive HTML5/JavaScript framework for modern web and mobile app development.
-- **Category**: dev-tool
-- **GitHub**: <https://github.com/telerik/kendo-ui-core>
-- **Owner**: Telerik
-- **Stars**: 1850
-
-### [EventStore](https://www.eventstore.com)
-
-- **Description**: The open-source, functional database with Complex Event Processing in JavaScript.
-- **Category**: open-source
-- **GitHub**: <https://github.com/EventStore/EventStore>
-- **Owner**: Event Store Ltd
-- **Stars**: 3800
-
-### [SoftUni Judge](https://judge.softuni.org)
-
-- **Description**: An automated testing system used to judge programming contests and homework assignments.
-- **Category**: open-source
-- **GitHub**: <https://github.com/SoftUni/SoftUni-Judge>
-- **Owner**: SoftUni
-- **Stars**: 210
-
-### [Kinvey](https://www.progress.com/kinvey)
-
-- **Description**: Backend as a service (BaaS) platform for mobile, web, and IoT applications.
-- **Category**: dev-tool
-- **GitHub**: <https://github.com/Kinvey/js-sdk>
-- **Owner**: Progress Software
-- **Stars**: 540
-
-### [Imagga](https://imagga.com)
-
-- **Description**: Image recognition API for automated tagging, categorization and visual search capabilities.
-- **Category**: dev-tool
-- **GitHub**:
-- **Owner**: Imagga Technologies
-- **Stars**: 0
-
-### [Ontotext GraphDB](https://www.ontotext.com/products/graphdb/)
-
-- **Description**: Enterprise-ready semantic graph database, compliant with W3C standards.
-- **Category**: dev-tool
-- **GitHub**: <https://github.com/Ontotext-AD/graphdb-examples>
-- **Owner**: Ontotext
-- **Stars**: 180
-
-### [Gtmhub](https://www.gtmhub.com)
-
-- **Description**: OKR (Objectives and Key Results) management platform for aligning and tracking company goals.
-- **Category**: saas
-- **GitHub**:
-- **Owner**: Gtmhub
-- **Stars**: 0
-
-### [Enhancv](https://enhancv.com)
-
-- **Description**: Resume builder platform that helps professionals create effective and visually appealing resumes.
-- **Category**: app
-- **GitHub**:
-- **Owner**: Enhancv
-- **Stars**: 0
-
-## How to Run the Website
-
-1. Clone this repository
-2. Run `npm install` to install dependencies
-3. Run `node generate.js` to generate the projects.json file from this README
-4. Open index.html in your browser or use a local server
+Status indicators:
+* 🚀 Active: Project is actively maintained
+* 🏁 Inactive: No recent updates but still functional
+* ⚠️ Deprecated: No longer maintained or recommended
 
 ## Contributing
 

@@ -13,7 +13,7 @@ let projectsData = [];
 // Function to fetch projects from JSON file
 async function fetchProjects() {
     try {
-        const response = await fetch('projects.json');
+        const response = await fetch('assets/js/projects.json');
         if (!response.ok) {
             throw new Error('Failed to fetch projects data');
         }
@@ -45,8 +45,22 @@ function renderProjects(projects) {
         card.className = 'project-card bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300';
         card.setAttribute('data-category', project.category);
         
+        // Status label display
+        let statusLabel = '';
+        let statusClass = '';
+        
+        if (project.status === 'active') {
+            statusLabel = '🚀 Active';
+            statusClass = 'bg-green-100 text-green-800';
+        } else if (project.status === 'inactive') {
+            statusLabel = '🏁 Inactive';
+            statusClass = 'bg-yellow-100 text-yellow-800';
+        } else if (project.status === 'deprecated') {
+            statusLabel = '⚠️ Deprecated';
+            statusClass = 'bg-red-100 text-red-800';
+        }
+        
         card.innerHTML = `
-            <img src="${project.image}" alt="${project.name}" class="w-full h-40 object-cover">
             <div class="p-6">
                 <div class="flex justify-between items-start mb-4">
                     <h3 class="text-xl font-bold">${project.name}</h3>
@@ -58,7 +72,10 @@ function renderProjects(projects) {
                 <p class="text-gray-600 mb-4">${project.description}</p>
                 <div class="flex items-center text-sm text-gray-500 mb-4">
                     <span class="mr-4">by ${project.owner}</span>
-                    <span class="px-2 py-1 bg-gray-100 rounded-full capitalize">${project.category.replace('-', ' ')}</span>
+                    <div class="flex space-x-2">
+                        <span class="px-2 py-1 bg-gray-100 rounded-full capitalize">${project.category.replace('-', ' ')}</span>
+                        ${project.status ? `<span class="px-2 py-1 rounded-full ${statusClass}">${statusLabel}</span>` : ''}
+                    </div>
                 </div>
                 <div class="flex justify-between">
                     <a href="${project.url}" target="_blank" class="text-bulgaria hover:underline font-medium">
@@ -148,9 +165,10 @@ function setupModal() {
             url: document.getElementById('project-url').value,
             github: document.getElementById('project-github').value,
             category: document.getElementById('project-category').value,
-            image: "https://via.placeholder.com/300x200",
+            github_username: document.getElementById('project-github').value.split('/').pop(),
             stars: 0,
-            owner: "Submitted Project" // In a real app, this would be the user's organization
+            owner: "Submitted Project", // In a real app, this would be the user's organization
+            status: "active"
         };
         
         // In a real application, this would send data to a server
