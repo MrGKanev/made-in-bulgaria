@@ -77,6 +77,17 @@ Where:
 
 4. Submit a pull request with your addition
 
+### Project Quality Guidelines
+
+While everyone is welcome to submit their projects, we maintain certain quality standards:
+
+- **Project usage requirement**: Projects should demonstrate actual usage and value. Submissions that appear to be unused or created solely for link-building purposes may be removed.
+- **Multiple submissions**: Contributors submitting multiple projects should ensure each project has genuine usage and community value.
+- **Social proof requirement**: Projects should have some demonstrable community interest (minimum 10 GitHub stars or equivalent social proof). This helps ensure quality and relevance to the community.
+- **Maintainer discretion**: Project maintainers may remove listings that don't meet community standards or lack sufficient community engagement.
+
+Remember, this showcase is intended to highlight quality Bulgarian projects that provide value to the broader community, not to serve as a repository for dormant or unused projects.
+
 The project will be automatically added to the website when your PR is merged.
 
 ## Development Setup
@@ -102,13 +113,25 @@ If you want to work on the website itself:
    npm run generate
    ```
 
-4. Start the development server
+4. Compile CSS styles for development (with watch mode)
+
+   ```
+   npx @tailwindcss/cli -i ./assets/css/input.css -o ./assets/css/output.css --watch
+   ```
+
+5. For production builds (minified CSS)
+
+   ```
+   npx @tailwindcss/cli -i ./assets/css/input.css -o ./assets/css/output.css --minify
+   ```
+
+6. Start the development server
 
    ```
    npm start
    ```
 
-5. Visit `http://localhost:5000` in your browser
+7. Visit `http://localhost:5000` in your browser
 
 ## Style Guidelines
 
