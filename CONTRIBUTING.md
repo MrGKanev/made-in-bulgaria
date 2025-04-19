@@ -48,7 +48,7 @@ made-in-bulgaria/
 │       ├── main.js              # Main JavaScript functionality
 │       ├── letter-navigation.js # Alphabet navigation
 │       └── projects.json        # Generated projects data
-|       └── generate.js          # Script to generate projects.json
+│       └── generate.js          # Script to generate projects.json
 ├── index.html                   # Main page
 ├── README.md                    # Project documentation
 ├── LICENSE                      # MIT License
