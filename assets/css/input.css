@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+/* Custom styles */
+.project-card:hover {
+  transform: translateY(-5px);
+  transition: transform 0.3s ease;
+}
+
+.bg-bulgaria {
+  background-color: #008D43;
+}
+
+.text-bulgaria {
+  color: #008D43;
+}
+
+.bulgaria-red {
+  color: #D62612;
+}
+
+.bulgaria-white {
+  color: #FFFFFF;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.icon-sm {
+  width: 20px;
+  height: 20px;
+}
+
+.icon-lg {
+  width: 32px;
+  height: 32px;
+}
+
+/* Footer icon styling */
+footer .icon {
+  filter: brightness(0) invert(1);
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+}
+
+footer a:hover .icon {
+  opacity: 1;
+}
