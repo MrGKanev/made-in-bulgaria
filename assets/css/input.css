@@ -6,20 +6,35 @@
   transition: transform 0.3s ease;
 }
 
-.bg-bulgaria {
+/* Original Bulgaria green color - now used for non-text elements only */
+.bg-bulgaria-original {
   background-color: #008D43;
 }
 
+/* New accessible Bulgaria green with better contrast with white text */
+.bg-bulgaria {
+  background-color: #00703A;
+  /* Darker green for better contrast with white */
+}
+
 .text-bulgaria {
-  color: #008D43;
+  color: #00562c;
+  /* Matching darker green */
 }
 
 .bulgaria-red {
   color: #D62612;
 }
 
-.bulgaria-white {
-  color: #FFFFFF;
+/* Category tag styling with improved contrast */
+.category-tag {
+  background-color: #E5E7EB;
+  /* Slightly darker than gray-100 */
+  color: #1F2937;
+  /* Darker text (gray-800) for better contrast */
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  text-transform: capitalize;
 }
 
 .icon {

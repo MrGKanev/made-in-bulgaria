@@ -65,7 +65,7 @@ function renderProjects(projects) {
                 <div class="flex justify-between items-start mb-4">
                     <h3 class="text-xl font-bold">${project.name}</h3>
                     <div class="flex items-center">
-                        <img src="assets/img/icons/star.svg" alt="Stars" class="icon-sm text-yellow-400 mr-1">
+                        <img src="assets/img/icons/star.svg" alt="" class="icon-sm text-yellow-400 mr-1">
                         <span>${project.stars}</span>
                     </div>
                 </div>
@@ -73,21 +73,21 @@ function renderProjects(projects) {
                 <div class="flex items-center text-sm text-gray-500 mb-4">
                     <span class="mr-4">by ${project.owner}</span>
                     <div class="flex space-x-2">
-                        <span class="px-2 py-1 bg-gray-100 rounded-full capitalize">${project.category.replace('-', ' ')}</span>
+                        <span class="category-tag">${project.category.replace('-', ' ')}</span>
                         ${project.status ? `<span class="px-2 py-1 rounded-full ${statusClass}">${statusLabel}</span>` : ''}
                     </div>
                 </div>
                 <div class="flex justify-between">
-                    <a href="${project.url}" target="_blank" class="text-bulgaria hover:underline font-medium">
+                    <a href="${project.url}" target="_blank" class="text-bulgaria hover:underline font-medium" aria-label="Visit ${project.name}">
                         <span class="flex items-center">
-                            <img src="assets/img/icons/external-link.svg" alt="Visit" class="icon-sm mr-1">
+                            <img src="assets/img/icons/external-link.svg" alt="" class="icon-sm mr-1">
                             Visit
                         </span>
                     </a>
                     ${project.github ? `
-                        <a href="${project.github}" target="_blank" class="text-gray-700 hover:text-gray-900">
+                        <a href="${project.github}" target="_blank" class="text-gray-700 hover:text-gray-900" aria-label="${project.name}'s GitHub">
                             <span class="flex items-center">
-                                <img src="assets/img/icons/github.svg" alt="GitHub" class="icon-sm mr-1">
+                                <img src="assets/img/icons/github.svg" alt="" class="icon-sm mr-1">
                                 GitHub
                             </span>
                         </a>
@@ -205,7 +205,7 @@ async function init() {
     if (letterToggle) {
         letterToggle.innerHTML = `
             <span class="flex items-center">
-                <img src="assets/img/icons/font.svg" alt="A-Z" class="icon-sm mr-1">
+                <img src="assets/img/icons/font.svg" alt="" class="icon-sm mr-1">
                 A-Z Navigation
             </span>
         `;
