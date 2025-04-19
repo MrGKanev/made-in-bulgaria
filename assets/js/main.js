@@ -65,7 +65,7 @@ function renderProjects(projects) {
                 <div class="flex justify-between items-start mb-4">
                     <h3 class="text-xl font-bold">${project.name}</h3>
                     <div class="flex items-center">
-                        <i class="fas fa-star text-yellow-400 mr-1"></i>
+                        <img src="assets/img/icons/star.svg" alt="Stars" class="icon-sm text-yellow-400 mr-1">
                         <span>${project.stars}</span>
                     </div>
                 </div>
@@ -79,11 +79,17 @@ function renderProjects(projects) {
                 </div>
                 <div class="flex justify-between">
                     <a href="${project.url}" target="_blank" class="text-bulgaria hover:underline font-medium">
-                        <i class="fas fa-external-link-alt mr-1"></i> Visit
+                        <span class="flex items-center">
+                            <img src="assets/img/icons/external-link.svg" alt="Visit" class="icon-sm mr-1">
+                            Visit
+                        </span>
                     </a>
                     ${project.github ? `
                         <a href="${project.github}" target="_blank" class="text-gray-700 hover:text-gray-900">
-                            <i class="fab fa-github mr-1"></i> GitHub
+                            <span class="flex items-center">
+                                <img src="assets/img/icons/github.svg" alt="GitHub" class="icon-sm mr-1">
+                                GitHub
+                            </span>
                         </a>
                     ` : ''}
                 </div>
@@ -156,8 +162,18 @@ function setupFilterButtons() {
 // Set up modal functionality - keeping this for reference but it's no longer used
 // The submit button now links directly to GitHub
 function setupModal() {
-    // Code removed as modal is no longer needed
-    console.log("Modal setup skipped - using GitHub for submissions");
+    if (closeModal) {
+        closeModal.addEventListener('click', () => {
+            submitModal.classList.add('hidden');
+        });
+        
+        // Close modal when clicking outside
+        submitModal.addEventListener('click', (e) => {
+            if (e.target === submitModal) {
+                submitModal.classList.add('hidden');
+            }
+        });
+    }
 }
 
 // Initialize the application
@@ -181,7 +197,19 @@ async function init() {
     // Set up filter buttons
     setupFilterButtons();
     
-    // Modal setup skipped as we're now linking directly to GitHub
+    // Set up the modal (mostly disabled, but keeping close button functionality)
+    setupModal();
+    
+    // Initialize the letter-navigation toggle button
+    const letterToggle = document.getElementById('toggle-letter-nav');
+    if (letterToggle) {
+        letterToggle.innerHTML = `
+            <span class="flex items-center">
+                <img src="assets/img/icons/font.svg" alt="A-Z" class="icon-sm mr-1">
+                A-Z Navigation
+            </span>
+        `;
+    }
 }
 
 // Start the application when the DOM is loaded

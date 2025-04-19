@@ -10,7 +10,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const toggleButton = document.createElement('button');
     toggleButton.className = 'filter-btn bg-white text-gray-700 px-4 py-2 rounded-md shadow-sm';
-    toggleButton.innerHTML = '<i class="fas fa-font mr-1"></i> A-Z Navigation';
+    toggleButton.innerHTML = `
+      <span class="flex items-center">
+        <img src="assets/img/icons/font.svg" alt="A-Z" class="icon-sm mr-1">
+        A-Z Navigation
+      </span>
+    `;
     toggleButton.id = 'toggle-letter-nav';
     
     filtersContainer.appendChild(toggleButton);
