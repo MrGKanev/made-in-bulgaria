@@ -131,6 +131,54 @@
       "image": "https://via.placeholder.com/300x200",
       "stars": 0,
       "owner": "Enhancv"
+    },
+    {
+      "id": 13,
+      "name": "Rhiagano Consulting",
+      "description": "High-end IT consulting services that drive business growth and efficiency, with a strong presence in Europe and Africa.",
+      "category": "company",
+      "url": "https://rhiagano.com",
+      "github": "",
+      "image": "https://via.placeholder.com/300x200",
+      "stars": 0,
+      "owner": "Rhiagano Consulting",
+      "status": "active"
+    },
+    {
+      "id": 14,
+      "name": "Sfera",
+      "description": "Powers the economy of tomorrow by making global satellite monitoring easy, quick and widely available.",
+      "category": "saas",
+      "url": "https://sfera.com",
+      "github": "",
+      "image": "https://via.placeholder.com/300x200",
+      "stars": 0,
+      "owner": "Sfera",
+      "status": "active"
+    },
+    {
+      "id": 15,
+      "name": "nPloy",
+      "description": "AI-powered job app where jobs match YOU. Swipe roles that fit your vibe & salary. Companies apply for you. Fast, fair, human. 250K+ users trust us.",
+      "category": "app",
+      "url": "https://nploy.com",
+      "github": "",
+      "image": "https://via.placeholder.com/300x200",
+      "stars": 0,
+      "owner": "nPloy",
+      "status": "active"
+    },
+    {
+      "id": 16,
+      "name": "EnduroSat",
+      "description": "Designs advanced nanosatellites and space systems, offering scalable, cost-effective solutions. Founded in Bulgaria, it enables easier access to space for various missions.",
+      "category": "company",
+      "url": "https://www.endurosat.com",
+      "github": "",
+      "image": "https://via.placeholder.com/300x200",
+      "stars": 0,
+      "owner": "EnduroSat",
+      "status": "active"
     }
   ]
 }
