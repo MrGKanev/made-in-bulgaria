@@ -1,0 +1,29 @@
+# Claude Code Configuration for Made in Bulgaria
+
+[project]
+name = "made-in-bulgaria"
+description = "A showcase of Bulgarian tech projects and companies"
+
+[commands]
+# Custom slash commands directory
+directory = ".claude/commands"
+
+[hooks]
+# Hooks directory for lifecycle events
+directory = ".claude/hooks"
+
+# Build and development settings
+[build]
+# Run before committing
+pre_commit = "npm run build"
+
+# Project-specific commands
+[scripts]
+generate = "npm run generate"
+build = "npm run build"
+start = "npm run start"
+
+# File patterns to watch
+[watch]
+include = ["**/*.js", "**/*.css", "**/*.html", "**/*.json"]
+exclude = ["node_modules/**", "assets/css/output.css", ".git/**"]
