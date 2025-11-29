@@ -4,8 +4,9 @@
   "description": "A showcase of Bulgarian tech projects and companies",
   "main": "index.js",
   "scripts": {
-    "generate": "node generate.js",
-    "start": "node generate.js && npx serve"
+    "generate": "node assets/js/generate.js && npx tailwindcss -i assets/css/input.css -o assets/css/output.css",
+    "build": "npx tailwindcss -i assets/css/input.css -o assets/css/output.css --minify",
+    "start": "node assets/js/generate.js && npx tailwindcss -i assets/css/input.css -o assets/css/output.css && npx serve"
   },
   "keywords": [
     "bulgaria",
@@ -17,8 +18,8 @@
   "author": "gkanev.com",
   "license": "MIT",
   "dependencies": {
-    "@tailwindcss/cli": "^4.1.13",
+    "@tailwindcss/cli": "^4.1.17",
     "serve": "^14.2.5",
-    "tailwindcss": "^4.1.13"
+    "tailwindcss": "^4.1.17"
   }
 }

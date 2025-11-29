@@ -9,10 +9,10 @@ const path = require('path');
 // Function to read the README.md file
 function readReadmeFile() {
   try {
-    // Check for both uppercase and lowercase readme files
-    let readmePath = path.join(__dirname, 'README.md');
+    // Check for both uppercase and lowercase readme files in project root
+    let readmePath = path.join(__dirname, '..', '..', 'README.md');
     if (!fs.existsSync(readmePath)) {
-      readmePath = path.join(__dirname, 'readme.md');
+      readmePath = path.join(__dirname, '..', '..', 'readme.md');
     }
     return fs.readFileSync(readmePath, 'utf8');
   } catch (error) {
@@ -91,13 +91,10 @@ function writeProjectsJson(projects) {
     const jsonContent = {
       projects
     };
-    
-    // Ensure the assets/js directory exists
-    const outputDir = path.join(__dirname, 'assets', 'js');
-    if (!fs.existsSync(outputDir)) {
-      fs.mkdirSync(outputDir, { recursive: true });
-    }
-    
+
+    // Output directory is the same as the script location
+    const outputDir = __dirname;
+
     // Write to the correct location
     const outputPath = path.join(outputDir, 'projects.json');
     fs.writeFileSync(outputPath, JSON.stringify(jsonContent, null, 2), 'utf8');
