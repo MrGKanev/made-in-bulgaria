@@ -1,137 +1,168 @@
-// This code adds an optional alphabetical letter navigation to the page
-document.addEventListener('DOMContentLoaded', function() {
-  // Create letter navigation
+// Letter navigation module - organizes projects alphabetically
+(function() {
+  'use strict';
+
+  // Cache DOM references
+  let projectsGrid = null;
+  let letterNav = null;
+  let toggleButton = null;
+  let isActive = false;
+
+  // Store original projects for reset
+  let originalProjects = [];
+
+  function init() {
+    projectsGrid = document.getElementById('projects-grid');
+    if (!projectsGrid) return;
+
+    createToggleButton();
+    createLetterNavigation();
+  }
+
+  function createToggleButton() {
+    const filtersContainer = document.querySelector('.py-6.bg-gray-50 .container .flex.flex-wrap');
+    if (!filtersContainer) return;
+
+    toggleButton = document.createElement('button');
+    toggleButton.className = 'filter-btn bg-white text-gray-700 px-4 py-2 rounded-md shadow-sm';
+    toggleButton.id = 'toggle-letter-nav';
+
+    const span = document.createElement('span');
+    span.className = 'flex items-center';
+
+    const img = document.createElement('img');
+    img.src = 'assets/img/icons/font.svg';
+    img.alt = '';
+    img.className = 'icon-sm mr-1';
+
+    span.appendChild(img);
+    span.appendChild(document.createTextNode('A-Z Navigation'));
+    toggleButton.appendChild(span);
+
+    toggleButton.addEventListener('click', toggleNavigation);
+    filtersContainer.appendChild(toggleButton);
+  }
+
   function createLetterNavigation() {
     const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const letters = alphabet.split('');
-    
-    // Create toggle button and add it directly to the filters section with other filters
-    const filtersContainer = document.querySelector('.py-6.bg-gray-50 .container .flex.flex-wrap');
-    
-    const toggleButton = document.createElement('button');
-    toggleButton.className = 'filter-btn bg-white text-gray-700 px-4 py-2 rounded-md shadow-sm';
-    toggleButton.innerHTML = `
-      <span class="flex items-center">
-        <img src="assets/img/icons/font.svg" alt="A-Z" class="icon-sm mr-1">
-        A-Z Navigation
-      </span>
-    `;
-    toggleButton.id = 'toggle-letter-nav';
-    
-    filtersContainer.appendChild(toggleButton);
-    
-    // Create navigation container
-    const navContainer = document.createElement('div');
-    navContainer.className = 'letter-nav container mx-auto px-4 py-6 flex flex-wrap justify-center gap-4 hidden';
-    navContainer.id = 'letter-navigation';
-    
-    // Create letter links
-    letters.forEach(letter => {
-      const letterLink = document.createElement('a');
-      letterLink.href = `#section-${letter}`;
-      letterLink.className = 'filter-btn bg-white text-gray-700 px-4 py-2 rounded-md shadow-sm';
-      letterLink.textContent = letter;
-      letterLink.addEventListener('click', (e) => {
-        // Check if section exists before scrolling
-        const sectionExists = document.getElementById(`section-${letter}`);
-        if (!sectionExists) {
-          e.preventDefault();
-          // Optional: show message that no projects exist for this letter
-        }
-      });
-      navContainer.appendChild(letterLink);
-    });
-    
-    // Insert after the filters section
-    const filtersSection2 = document.querySelector('.py-6.bg-gray-50');
-    filtersSection2.after(navContainer);
-    
-    // Set up toggle button functionality
-    toggleButton.addEventListener('click', function() {
-      const letterNav = document.getElementById('letter-navigation');
-      if (letterNav.classList.contains('hidden')) {
-        letterNav.classList.remove('hidden');
-        toggleButton.classList.remove('bg-white', 'text-gray-700');
-        toggleButton.classList.add('bg-bulgaria', 'text-white');
-        // Reorganize projects when showing the letter navigation
-        organizeProjectsByLetter();
-      } else {
-        letterNav.classList.add('hidden');
-        toggleButton.classList.remove('bg-bulgaria', 'text-white');
-        toggleButton.classList.add('bg-white', 'text-gray-700');
-        // Reset projects to default view
-        resetProjectsView();
-      }
-    });
+    const filtersSection = document.querySelector('.py-6.bg-gray-50');
+    if (!filtersSection) return;
+
+    letterNav = document.createElement('div');
+    letterNav.className = 'letter-nav container mx-auto px-4 py-6 flex flex-wrap justify-center gap-4 hidden';
+    letterNav.id = 'letter-navigation';
+
+    // Use DocumentFragment for efficient DOM insertion
+    const fragment = document.createDocumentFragment();
+
+    for (const letter of alphabet) {
+      const link = document.createElement('a');
+      link.href = `#section-${letter}`;
+      link.className = 'filter-btn bg-white text-gray-700 px-4 py-2 rounded-md shadow-sm';
+      link.textContent = letter;
+      link.addEventListener('click', handleLetterClick);
+      fragment.appendChild(link);
+    }
+
+    letterNav.appendChild(fragment);
+    filtersSection.after(letterNav);
   }
-  
-  // Reset projects to their default view
-  function resetProjectsView() {
-    const projectsGrid = document.getElementById('projects-grid');
-    const projects = Array.from(projectsGrid.querySelectorAll('.project-card'));
-    const letterSections = Array.from(projectsGrid.querySelectorAll('[id^="section-"]'));
-    
-    // Remove letter sections
-    letterSections.forEach(section => section.remove());
-    
-    // Restore all projects
-    projectsGrid.innerHTML = '';
-    projects.forEach(project => {
-      projectsGrid.appendChild(project);
-    });
-    
-    // Re-apply any active filters
-    const activeFilter = document.querySelector('.filter-btn.active:not(#toggle-letter-nav)');
-    if (activeFilter) {
-      const filterEvent = new Event('click');
-      activeFilter.dispatchEvent(filterEvent);
+
+  function handleLetterClick(e) {
+    const letter = e.target.textContent;
+    const section = document.getElementById(`section-${letter}`);
+    if (!section) {
+      e.preventDefault();
     }
   }
-  
-  // Organize projects by first letter
-  function organizeProjectsByLetter() {
-    const projectsGrid = document.getElementById('projects-grid');
+
+  function toggleNavigation() {
+    if (!letterNav || !toggleButton) return;
+
+    isActive = !isActive;
+
+    if (isActive) {
+      // Store current projects before reorganizing
+      originalProjects = Array.from(projectsGrid.querySelectorAll('.project-card'));
+
+      letterNav.classList.remove('hidden');
+      toggleButton.classList.remove('bg-white', 'text-gray-700');
+      toggleButton.classList.add('bg-bulgaria', 'text-white');
+      organizeByLetter();
+    } else {
+      letterNav.classList.add('hidden');
+      toggleButton.classList.remove('bg-bulgaria', 'text-white');
+      toggleButton.classList.add('bg-white', 'text-gray-700');
+      resetView();
+    }
+  }
+
+  function organizeByLetter() {
     const projects = Array.from(projectsGrid.querySelectorAll('.project-card'));
-    
+    if (projects.length === 0) return;
+
     // Group projects by first letter
-    const projectsByLetter = {};
-    
+    const grouped = {};
     projects.forEach(project => {
-      const projectName = project.querySelector('h3').textContent.trim();
-      const firstLetter = projectName.charAt(0).toUpperCase();
-      
-      if (!projectsByLetter[firstLetter]) {
-        projectsByLetter[firstLetter] = [];
-      }
-      
-      projectsByLetter[firstLetter].push(project);
+      const nameEl = project.querySelector('h3');
+      const name = nameEl ? nameEl.textContent.trim() : '';
+      const letter = name.charAt(0).toUpperCase();
+      if (!grouped[letter]) grouped[letter] = [];
+      grouped[letter].push(project);
     });
-    
-    // Clear the grid
-    projectsGrid.innerHTML = '';
-    
-    // Sort letters alphabetically
-    const sortedLetters = Object.keys(projectsByLetter).sort();
-    
-    // Create letter sections and add projects
+
+    // Build new content with DocumentFragment
+    const fragment = document.createDocumentFragment();
+    const sortedLetters = Object.keys(grouped).sort();
+
     sortedLetters.forEach(letter => {
-      // Create letter section header
-      const letterSection = document.createElement('div');
-      letterSection.id = `section-${letter}`;
-      letterSection.className = 'col-span-full';
-      letterSection.innerHTML = `
-        <div class="text-5xl font-light text-gray-300 mb-6 mt-8 text-center">${letter}</div>
-      `;
-      
-      projectsGrid.appendChild(letterSection);
-      
-      // Add projects under this letter
-      projectsByLetter[letter].forEach(project => {
-        projectsGrid.appendChild(project);
+      // Create section header using safe DOM methods
+      const section = document.createElement('div');
+      section.id = `section-${letter}`;
+      section.className = 'col-span-full';
+
+      const letterHeader = document.createElement('div');
+      letterHeader.className = 'text-5xl font-light text-gray-300 mb-6 mt-8 text-center';
+      letterHeader.textContent = letter;
+      section.appendChild(letterHeader);
+
+      fragment.appendChild(section);
+
+      // Add projects for this letter
+      grouped[letter].forEach(project => {
+        fragment.appendChild(project);
       });
     });
+
+    // Clear and rebuild grid
+    while (projectsGrid.firstChild) {
+      projectsGrid.removeChild(projectsGrid.firstChild);
+    }
+    projectsGrid.appendChild(fragment);
   }
-  
-  // Initialize immediately when DOM loads
-  createLetterNavigation();
-});
+
+  function resetView() {
+    // Clear grid
+    while (projectsGrid.firstChild) {
+      projectsGrid.removeChild(projectsGrid.firstChild);
+    }
+
+    // Restore original projects
+    originalProjects.forEach(project => {
+      projectsGrid.appendChild(project);
+    });
+    originalProjects = [];
+
+    // Re-trigger current filter
+    const activeFilter = document.querySelector('.filter-btn.active:not(#toggle-letter-nav)');
+    if (activeFilter) {
+      activeFilter.click();
+    }
+  }
+
+  // Expose for external use
+  window.organizeProjectsByLetter = organizeByLetter;
+
+  // Initialize when DOM is ready
+  document.addEventListener('DOMContentLoaded', init);
+})();

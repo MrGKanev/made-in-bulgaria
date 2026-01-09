@@ -1,124 +1,208 @@
 /**
- * This script reads the README.md file and generates a projects.json file
- * based on the alphabetically organized project information in the README.
+ * Generates projects.json from README.md with real GitHub data
+ *
+ * Fetches actual stars, descriptions, and URLs from GitHub API.
+ * Supports GITHUB_TOKEN env variable for higher rate limits.
  */
 
 const fs = require('fs');
 const path = require('path');
+const https = require('https');
 
-// Function to read the README.md file
-function readReadmeFile() {
-  try {
-    // Check for both uppercase and lowercase readme files in project root
-    let readmePath = path.join(__dirname, '..', '..', 'README.md');
-    if (!fs.existsSync(readmePath)) {
-      readmePath = path.join(__dirname, '..', '..', 'readme.md');
+// GitHub API configuration
+const GITHUB_API = 'api.github.com';
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+
+// Read README.md
+function readReadme() {
+  const paths = [
+    path.join(__dirname, '..', '..', 'README.md'),
+    path.join(__dirname, '..', '..', 'readme.md')
+  ];
+
+  for (const p of paths) {
+    if (fs.existsSync(p)) {
+      return fs.readFileSync(p, 'utf8');
     }
-    return fs.readFileSync(readmePath, 'utf8');
-  } catch (error) {
-    console.error('Error reading README.md:', error);
-    process.exit(1);
   }
+
+  console.error('Error: README.md not found');
+  process.exit(1);
 }
 
-// Function to parse project information from the README content
-function parseProjects(readmeContent) {
+// Parse projects from README content
+function parseReadme(content) {
   const projects = [];
-  let id = 1;
-  
-  // Regular expression to match project entries in the new format
-  const projectRegex = /\* (.*?) - (.*?) \*\*By @(.*?)\*\* \| (🚀 Active|🏁 Inactive|⚠️ Deprecated)/g;
-  
+  const regex = /\* (.+?) - (.+?) \*\*By @(.+?)\*\* \| (🚀 Active|🏁 Inactive|⚠️ Deprecated)/g;
+
+  // Stop parsing at "How to Add" section (template examples)
+  const contentEnd = content.indexOf('## How to Add');
+  const parseContent = contentEnd > 0 ? content.substring(0, contentEnd) : content;
+
   let match;
-  while ((match = projectRegex.exec(readmeContent)) !== null) {
-    const [_, name, description, githubUsername, status] = match;
-    
-    // Determine status based on emoji
-    let statusValue = 'active';
-    if (status.includes('Inactive')) {
-      statusValue = 'inactive';
-    } else if (status.includes('Deprecated')) {
-      statusValue = 'deprecated';
-    }
-    
-    // Determine category (this would need refinement based on your needs)
-    // For now, assigning a default category based on description keywords
+  while ((match = regex.exec(parseContent)) !== null) {
+    const [, name, description, username, statusText] = match;
+
+    let status = 'active';
+    if (statusText.includes('Inactive')) status = 'inactive';
+    else if (statusText.includes('Deprecated')) status = 'deprecated';
+
+    // Determine category from description
     let category = 'app';
-    const descLower = description.toLowerCase();
-    
-    if (descLower.includes('framework') || descLower.includes('library')) {
+    const desc = description.toLowerCase();
+    if (desc.includes('framework') || desc.includes('library') || desc.includes('open-source')) {
       category = 'open-source';
-    } else if (descLower.includes('api') || descLower.includes('tool')) {
+    } else if (desc.includes('api') || desc.includes('tool') || desc.includes('developer')) {
       category = 'dev-tool';
-    } else if (descLower.includes('service') || descLower.includes('platform')) {
+    } else if (desc.includes('platform') || desc.includes('service') || desc.includes('saas')) {
       category = 'saas';
     }
-    
-    // Create the GitHub URL if username is available
-    const github = githubUsername ? `https://github.com/${githubUsername}` : '';
-    
-    // Infer URL from name if not available (just a placeholder)
-    const url = `https://${name.toLowerCase().replace(/\s+/g, '-')}.com`;
-    
-    // Try to estimate stars based on status (just placeholders)
-    let stars = 0;
-    if (statusValue === 'active') {
-      stars = Math.floor(Math.random() * 1000) + 100; // Random number between 100-1100
-    } else if (statusValue === 'inactive') {
-      stars = Math.floor(Math.random() * 100); // Random number between 0-100
-    }
-    
+
     projects.push({
-      id: id++,
-      name,
-      description,
-      category,
-      url,
-      github,
-      github_username: githubUsername,
-      stars,
-      owner: githubUsername,
-      status: statusValue
+      name: name.trim(),
+      description: description.trim(),
+      github_username: username.trim(),
+      status,
+      category
     });
   }
-  
+
   return projects;
 }
 
-// Function to write the projects.json file
-function writeProjectsJson(projects) {
-  try {
-    const jsonContent = {
-      projects
+// Fetch GitHub user/org data using https module
+function fetchGitHub(endpoint) {
+  return new Promise((resolve) => {
+    const headers = {
+      'User-Agent': 'made-in-bulgaria-generator',
+      'Accept': 'application/vnd.github.v3+json'
     };
 
-    // Output directory is the same as the script location
-    const outputDir = __dirname;
+    if (GITHUB_TOKEN) {
+      headers['Authorization'] = 'Bearer ' + GITHUB_TOKEN;
+    }
 
-    // Write to the correct location
-    const outputPath = path.join(outputDir, 'projects.json');
-    fs.writeFileSync(outputPath, JSON.stringify(jsonContent, null, 2), 'utf8');
-    console.log(`Successfully generated assets/js/projects.json with ${projects.length} projects.`);
-  } catch (error) {
-    console.error('Error writing projects.json:', error);
-    process.exit(1);
-  }
+    const options = {
+      hostname: GITHUB_API,
+      path: endpoint,
+      method: 'GET',
+      headers
+    };
+
+    const req = https.request(options, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        if (res.statusCode === 200) {
+          try {
+            resolve(JSON.parse(data));
+          } catch (e) {
+            resolve(null);
+          }
+        } else if (res.statusCode === 403) {
+          console.warn('GitHub API rate limit reached. Using fallback data.');
+          resolve(null);
+        } else {
+          resolve(null);
+        }
+      });
+    });
+
+    req.on('error', () => resolve(null));
+    req.setTimeout(5000, () => {
+      req.destroy();
+      resolve(null);
+    });
+    req.end();
+  });
 }
 
-// Main function
-function main() {
-  console.log('Reading README.md and generating projects.json...');
-  
-  const readmeContent = readReadmeFile();
-  const projects = parseProjects(readmeContent);
-  
-  if (projects.length === 0) {
-    console.error('No projects found in README.md. Make sure the format is correct.');
-    process.exit(1);
-  }
-  
-  writeProjectsJson(projects);
+// Get most popular repo for a user/org
+async function getPopularRepo(username) {
+  const repos = await fetchGitHub('/users/' + username + '/repos?sort=stars&per_page=5');
+
+  if (!repos || repos.length === 0) return null;
+
+  // Return the most starred repo
+  return repos.reduce((max, repo) =>
+    (repo.stargazers_count > (max?.stargazers_count || 0)) ? repo : max
+  , null);
 }
 
-// Run the script
-main();
+// Enrich project with GitHub data
+async function enrichProject(project, index) {
+  const { name, description, github_username, status, category } = project;
+
+  console.log('[' + (index + 1) + '] Fetching data for ' + name + '...');
+
+  // Try to find the best repo
+  const repo = await getPopularRepo(github_username);
+
+  // Build enriched project
+  const enriched = {
+    id: index + 1,
+    name,
+    description: repo?.description || description,
+    category,
+    url: repo?.homepage || repo?.html_url || 'https://github.com/' + github_username,
+    github: 'https://github.com/' + github_username,
+    github_username,
+    stars: repo?.stargazers_count || 0,
+    owner: github_username,
+    status
+  };
+
+  // Add delay to respect rate limits
+  await new Promise(r => setTimeout(r, 100));
+
+  return enriched;
+}
+
+// Write projects.json
+function writeOutput(projects) {
+  const output = { projects };
+  const outputPath = path.join(__dirname, 'projects.json');
+
+  fs.writeFileSync(outputPath, JSON.stringify(output, null, 2), 'utf8');
+  console.log('\nGenerated projects.json with ' + projects.length + ' projects.');
+}
+
+// Main
+async function main() {
+  console.log('Generating projects.json from README.md...');
+
+  if (GITHUB_TOKEN) {
+    console.log('Using GitHub token for higher rate limits.');
+  } else {
+    console.log('No GITHUB_TOKEN set. Using anonymous requests (60/hour limit).');
+  }
+
+  const content = readReadme();
+  const parsed = parseReadme(content);
+
+  if (parsed.length === 0) {
+    console.error('No projects found. Check README.md format.');
+    process.exit(1);
+  }
+
+  console.log('Found ' + parsed.length + ' projects. Fetching GitHub data...\n');
+
+  const enriched = [];
+  for (let i = 0; i < parsed.length; i++) {
+    const project = await enrichProject(parsed[i], i);
+    enriched.push(project);
+  }
+
+  // Sort by stars descending
+  enriched.sort((a, b) => b.stars - a.stars);
+
+  // Re-assign IDs after sorting
+  enriched.forEach((p, i) => p.id = i + 1);
+
+  writeOutput(enriched);
+}
+
+main().catch(err => {
+  console.error('Error:', err.message);
+  process.exit(1);
+});

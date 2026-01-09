@@ -1,11 +1,6 @@
 // DOM Elements
 const projectsGrid = document.getElementById('projects-grid');
 const searchInput = document.getElementById('search-input');
-const filterButtons = document.querySelectorAll('.filter-btn');
-// Submit modal elements are no longer needed since we're linking to GitHub
-const submitModal = document.getElementById('submit-modal');
-const closeModal = document.getElementById('close-modal');
-const projectForm = document.getElementById('project-form');
 
 // Store projects data globally
 let projectsData = [];
@@ -159,22 +154,6 @@ function setupFilterButtons() {
     });
 }
 
-// Set up modal functionality - keeping this for reference but it's no longer used
-// The submit button now links directly to GitHub
-function setupModal() {
-    if (closeModal) {
-        closeModal.addEventListener('click', () => {
-            submitModal.classList.add('hidden');
-        });
-        
-        // Close modal when clicking outside
-        submitModal.addEventListener('click', (e) => {
-            if (e.target === submitModal) {
-                submitModal.classList.add('hidden');
-            }
-        });
-    }
-}
 
 // Initialize the application
 async function init() {
@@ -196,10 +175,7 @@ async function init() {
     
     // Set up filter buttons
     setupFilterButtons();
-    
-    // Set up the modal (mostly disabled, but keeping close button functionality)
-    setupModal();
-    
+
     // Initialize the letter-navigation toggle button
     const letterToggle = document.getElementById('toggle-letter-nav');
     if (letterToggle) {
