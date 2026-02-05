@@ -1,0 +1,73 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  jsonLd?: object;
+  noindex?: boolean;
+}
+
+const {
+  title,
+  description,
+  canonical,
+  ogImage = '/made-in-bulgaria/og-image.png',
+  ogType = 'website',
+  jsonLd,
+  noindex = false
+} = Astro.props;
+
+const siteUrl = 'https://mrgkanev.github.io';
+const fullCanonical = canonical ? `${siteUrl}${canonical}` : Astro.url.href;
+const fullOgImage = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}`;
+---
+
+<!-- Primary Meta Tags -->
+<meta name="title" content={title} />
+<meta name="description" content={description} />
+<meta name="author" content="Gabriel Kanev" />
+<meta name="keywords" content="Bulgarian tech, software development Bulgaria, tech startups Bulgaria, open source Bulgaria, Bulgarian entrepreneurs, Bulgarian developers, made in Bulgaria, български проекти, софтуер България" />
+<meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'} />
+<meta name="googlebot" content={noindex ? 'noindex, nofollow' : 'index, follow'} />
+
+<!-- Theme and Mobile -->
+<meta name="theme-color" content="#00703A" />
+<meta name="color-scheme" content="light" />
+<meta name="format-detection" content="telephone=no" />
+
+<!-- Canonical -->
+<link rel="canonical" href={fullCanonical} />
+
+<!-- Language -->
+<link rel="alternate" hreflang="bg" href={fullCanonical} />
+<link rel="alternate" hreflang="x-default" href={fullCanonical} />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content={ogType} />
+<meta property="og:url" content={fullCanonical} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={fullOgImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:locale" content="bg_BG" />
+<meta property="og:site_name" content="Made in Bulgaria" />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content={fullCanonical} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={fullOgImage} />
+<meta name="twitter:site" content="@MrGKanev" />
+<meta name="twitter:creator" content="@MrGKanev" />
+
+<!-- DNS Prefetch for performance -->
+<link rel="dns-prefetch" href="https://github.com" />
+
+<!-- JSON-LD Structured Data -->
+{jsonLd && (
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+)}

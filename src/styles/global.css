@@ -1,42 +1,28 @@
 @import "tailwindcss";
 
-/* Custom styles */
-.project-card:hover {
-  transform: translateY(-5px);
-  transition: transform 0.3s ease;
-}
-
-/* Original Bulgaria green color - now used for non-text elements only */
-.bg-bulgaria-original {
-  background-color: #008D43;
-}
-
-/* New accessible Bulgaria green with better contrast with white text */
+/* Bulgaria colors */
 .bg-bulgaria {
   background-color: #00703A;
-  /* Darker green for better contrast with white */
 }
 
 .text-bulgaria {
   color: #00562c;
-  /* Matching darker green */
 }
 
 .bulgaria-red {
   color: #D62612;
 }
 
-/* Category tag styling with improved contrast */
+/* Category tag styling */
 .category-tag {
   background-color: #E5E7EB;
-  /* Slightly darker than gray-100 */
   color: #1F2937;
-  /* Darker text (gray-800) for better contrast */
   padding: 0.25rem 0.5rem;
   border-radius: 9999px;
   text-transform: capitalize;
 }
 
+/* Icon sizes */
 .icon {
   width: 24px;
   height: 24px;
@@ -58,9 +44,26 @@
 footer .icon {
   filter: brightness(0) invert(1);
   opacity: 0.7;
-  transition: opacity 0.2s ease;
 }
 
 footer a:hover .icon {
   opacity: 1;
+}
+
+/* Letter navigation section headers */
+.letter-section-header {
+  font-size: 3rem;
+  font-weight: 300;
+  color: #d1d5db;
+  text-align: center;
+  margin-top: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Line clamp for descriptions */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

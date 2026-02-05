@@ -1,0 +1,38 @@
+---
+import SEO from '../components/SEO.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical?: string;
+  jsonLd?: object;
+}
+
+const { title, description, canonical, jsonLd } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <SEO
+    title={title}
+    description={description}
+    canonical={canonical}
+    jsonLd={jsonLd}
+  />
+  <link rel="icon" type="image/svg+xml" href="/made-in-bulgaria/favicon.svg" />
+</head>
+<body class="bg-gray-50 font-sans">
+  <Header />
+  <main>
+    <slot />
+  </main>
+  <Footer />
+</body>
+</html>

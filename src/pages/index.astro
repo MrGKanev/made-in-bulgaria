@@ -1,0 +1,101 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import CategoryFilters from '../components/CategoryFilters.astro';
+import ProjectGrid from '../components/ProjectGrid.astro';
+
+// Get all projects from content collection
+const projectEntries = await getCollection('projects');
+
+// Transform to the format expected by components
+const projects = projectEntries
+  .map(entry => ({
+    ...entry.data,
+    status: entry.data.status as 'active' | 'inactive' | 'deprecated'
+  }))
+  // Sort by stars descending
+  .sort((a, b) => b.stars - a.stars);
+
+// Calculate stats for structured data
+const totalStars = projects.reduce((sum, p) => sum + p.stars, 0);
+const categories = [...new Set(projects.map(p => p.category))];
+
+// JSON-LD for CollectionPage + WebSite
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://mrgkanev.github.io/made-in-bulgaria/#website",
+      "url": "https://mrgkanev.github.io/made-in-bulgaria/",
+      "name": "Made in Bulgaria",
+      "description": "Showcase of Bulgarian tech projects and open-source software",
+      "inLanguage": "bg-BG",
+      "publisher": {
+        "@type": "Person",
+        "name": "Gabriel Kanev",
+        "url": "https://gkanev.com"
+      }
+    },
+    {
+      "@type": "CollectionPage",
+      "@id": "https://mrgkanev.github.io/made-in-bulgaria/#collection",
+      "url": "https://mrgkanev.github.io/made-in-bulgaria/",
+      "name": "Made in Bulgaria - Bulgarian Tech Projects",
+      "description": "Discover innovative tech projects, open-source software, and companies made in Bulgaria.",
+      "inLanguage": "bg-BG",
+      "isPartOf": {
+        "@id": "https://mrgkanev.github.io/made-in-bulgaria/#website"
+      },
+      "about": {
+        "@type": "Thing",
+        "name": "Bulgarian Technology Projects",
+        "description": "Open-source software and tech companies from Bulgaria"
+      },
+      "numberOfItems": projects.length,
+      "mainEntity": {
+        "@type": "ItemList",
+        "numberOfItems": projects.length,
+        "itemListElement": projects.slice(0, 10).map((project, index) => ({
+          "@type": "ListItem",
+          "position": index + 1,
+          "item": {
+            "@type": "SoftwareApplication",
+            "name": project.name,
+            "description": project.description,
+            "url": project.url,
+            "applicationCategory": project.category,
+            "author": {
+              "@type": "Organization",
+              "name": project.owner
+            }
+          }
+        }))
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://mrgkanev.github.io/made-in-bulgaria/"
+        }
+      ]
+    }
+  ]
+};
+---
+
+<BaseLayout
+  title="Made in Bulgaria - Showcase of Bulgarian Tech Projects"
+  description={`Discover innovative tech projects, open-source software, and companies made in Bulgaria. A showcase of Bulgarian technology innovation featuring ${projects.length} projects.`}
+  canonical="/made-in-bulgaria/"
+  jsonLd={jsonLd}
+>
+  <Hero projectCount={projects.length} />
+  <CategoryFilters />
+  <ProjectGrid projects={projects} />
+</BaseLayout>

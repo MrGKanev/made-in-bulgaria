@@ -1,0 +1,197 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map(project => ({
+    params: { slug: project.data.slug },
+    props: { project: project.data }
+  }));
+}
+
+interface Props {
+  project: {
+    name: string;
+    slug: string;
+    description: string;
+    category: string;
+    url: string;
+    github?: string;
+    github_username: string;
+    stars: number;
+    owner: string;
+    status: 'active' | 'inactive' | 'deprecated';
+  };
+}
+
+const { project } = Astro.props;
+const base = '/made-in-bulgaria';
+
+const statusConfig = {
+  active: { label: '🚀 Active', class: 'bg-green-100 text-green-800', description: 'This project is actively maintained.' },
+  inactive: { label: '🏁 Inactive', class: 'bg-yellow-100 text-yellow-800', description: 'This project is currently inactive.' },
+  deprecated: { label: '⚠️ Deprecated', class: 'bg-red-100 text-red-800', description: 'This project is deprecated.' }
+};
+
+const statusInfo = statusConfig[project.status] || statusConfig.active;
+
+// JSON-LD with @graph for better structured data
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "@id": `https://mrgkanev.github.io/made-in-bulgaria/projects/${project.slug}/#software`,
+      "name": project.name,
+      "description": project.description,
+      "url": project.url,
+      "applicationCategory": project.category,
+      "operatingSystem": "Cross-platform",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@type": "Organization",
+        "name": project.owner,
+        "url": project.github
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://mrgkanev.github.io/made-in-bulgaria/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": project.name,
+          "item": `https://mrgkanev.github.io/made-in-bulgaria/projects/${project.slug}/`
+        }
+      ]
+    }
+  ]
+};
+---
+
+<BaseLayout
+  title={`${project.name} - Made in Bulgaria`}
+  description={project.description}
+  canonical={`/made-in-bulgaria/projects/${project.slug}/`}
+  jsonLd={jsonLd}
+>
+  <article class="py-12 bg-white">
+    <div class="container mx-auto px-4 max-w-4xl">
+      <!-- Breadcrumb -->
+      <nav class="mb-8 text-sm text-gray-500" aria-label="Breadcrumb">
+        <ol class="flex items-center space-x-2" itemscope itemtype="https://schema.org/BreadcrumbList">
+          <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <a href={base} class="hover:text-bulgaria" itemprop="item">
+              <span itemprop="name">Home</span>
+            </a>
+            <meta itemprop="position" content="1" />
+          </li>
+          <li aria-hidden="true">
+            <span class="mx-2">/</span>
+          </li>
+          <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+            <span class="text-gray-900" itemprop="name">{project.name}</span>
+            <meta itemprop="position" content="2" />
+          </li>
+        </ol>
+      </nav>
+
+      <!-- Header -->
+      <header class="mb-8">
+        <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
+          <h1 class="text-4xl font-bold">{project.name}</h1>
+          <div class="flex items-center text-lg">
+            <svg class="icon text-yellow-400 mr-2" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+            <span class="font-semibold">{project.stars}</span>
+            <span class="text-gray-500 ml-1">stars on GitHub</span>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-3 mb-6">
+          <span class="category-tag text-sm">{project.category.replace('-', ' ')}</span>
+          <span class={`px-3 py-1 rounded-full text-sm ${statusInfo.class}`}>{statusInfo.label}</span>
+        </div>
+
+        <p class="text-xl text-gray-600">{project.description}</p>
+      </header>
+
+      <!-- Details -->
+      <section class="bg-gray-50 rounded-lg p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4">Project Details</h2>
+        <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <dt class="text-sm text-gray-500">Owner</dt>
+            <dd class="font-medium">{project.owner}</dd>
+          </div>
+          <div>
+            <dt class="text-sm text-gray-500">Category</dt>
+            <dd class="font-medium capitalize">{project.category.replace('-', ' ')}</dd>
+          </div>
+          <div>
+            <dt class="text-sm text-gray-500">Status</dt>
+            <dd class="font-medium">{statusInfo.description}</dd>
+          </div>
+          <div>
+            <dt class="text-sm text-gray-500">GitHub Stars</dt>
+            <dd class="font-medium">{project.stars.toLocaleString()}</dd>
+          </div>
+        </dl>
+      </section>
+
+      <!-- Actions -->
+      <section class="flex flex-wrap gap-4" aria-label="Project links">
+        <a
+          href={project.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="bg-bulgaria text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 inline-flex items-center"
+        >
+          <svg class="icon-sm mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+          Visit Project
+        </a>
+
+        {project.github && (
+          <a
+            href={project.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="bg-gray-800 text-white px-6 py-3 rounded-lg font-medium hover:opacity-90 inline-flex items-center"
+          >
+            <svg class="icon-sm mr-2" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+            </svg>
+            View on GitHub
+          </a>
+        )}
+
+        <a
+          href={base}
+          class="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-100 inline-flex items-center"
+        >
+          <svg class="icon-sm mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          Back to All Projects
+        </a>
+      </section>
+    </div>
+  </article>
+</BaseLayout>

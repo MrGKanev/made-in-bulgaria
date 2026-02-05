@@ -1,0 +1,205 @@
+---
+import ProjectCard from './ProjectCard.astro';
+
+interface Project {
+  name: string;
+  slug: string;
+  description: string;
+  category: string;
+  url: string;
+  github?: string;
+  stars: number;
+  owner: string;
+  status: 'active' | 'inactive' | 'deprecated';
+}
+
+interface Props {
+  projects: Project[];
+}
+
+const { projects } = Astro.props;
+---
+
+<section class="py-12 bg-gray-50">
+  <div class="container mx-auto px-4">
+    <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {projects.map(project => (
+        <ProjectCard {...project} />
+      ))}
+    </div>
+
+    <!-- No results message (hidden by default, shown via JS) -->
+    <div id="no-results" class="hidden text-center py-16">
+      <h3 class="text-xl font-medium text-gray-500">No projects found matching your criteria</h3>
+      <p class="mt-2 text-gray-400">Try adjusting your search or filters</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Client-side filtering and search
+  document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('search-input') as HTMLInputElement;
+    const projectsGrid = document.getElementById('projects-grid');
+    const noResults = document.getElementById('no-results');
+    const filterButtons = document.querySelectorAll('.filter-btn[data-filter]');
+    const letterNav = document.getElementById('letter-navigation');
+    const letterToggle = document.getElementById('toggle-letter-nav');
+
+    let currentFilter = 'all';
+    let isLetterNavActive = false;
+
+    function filterProjects() {
+      if (!projectsGrid) return;
+
+      const searchTerm = searchInput?.value.toLowerCase() || '';
+      const cards = projectsGrid.querySelectorAll('.project-card') as NodeListOf<HTMLElement>;
+      let visibleCount = 0;
+
+      // Remove letter sections if they exist
+      projectsGrid.querySelectorAll('.letter-section').forEach(el => el.remove());
+
+      cards.forEach(card => {
+        const category = card.dataset.category || '';
+        const name = card.dataset.name || '';
+        const owner = card.dataset.owner || '';
+        const description = card.dataset.description || '';
+
+        const matchesFilter = currentFilter === 'all' || category === currentFilter;
+        const matchesSearch = !searchTerm ||
+          name.includes(searchTerm) ||
+          owner.includes(searchTerm) ||
+          description.includes(searchTerm);
+
+        if (matchesFilter && matchesSearch) {
+          card.style.display = '';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+
+      // Show/hide no results message
+      if (noResults) {
+        noResults.classList.toggle('hidden', visibleCount > 0);
+      }
+
+      // Re-organize by letter if navigation is active
+      if (isLetterNavActive && visibleCount > 0) {
+        organizeByLetter();
+      }
+    }
+
+    function organizeByLetter() {
+      if (!projectsGrid) return;
+
+      const cards = Array.from(projectsGrid.querySelectorAll('.project-card:not([style*="display: none"])')) as HTMLElement[];
+      if (cards.length === 0) return;
+
+      // Group by first letter
+      const grouped: Record<string, HTMLElement[]> = {};
+      cards.forEach(card => {
+        const name = card.querySelector('h3')?.textContent?.trim() || '';
+        const letter = name.charAt(0).toUpperCase();
+        if (!grouped[letter]) grouped[letter] = [];
+        grouped[letter].push(card);
+      });
+
+      // Create document fragment for efficient DOM manipulation
+      const fragment = document.createDocumentFragment();
+      const letters = Object.keys(grouped).sort();
+
+      letters.forEach(letter => {
+        // Create section header using safe DOM methods
+        const section = document.createElement('div');
+        section.id = `section-${letter}`;
+        section.className = 'col-span-full letter-section';
+
+        const header = document.createElement('div');
+        header.className = 'letter-section-header';
+        header.textContent = letter;
+        section.appendChild(header);
+        fragment.appendChild(section);
+
+        // Append cards for this letter
+        grouped[letter].forEach(card => {
+          fragment.appendChild(card);
+        });
+      });
+
+      // Clear grid safely and append new content
+      while (projectsGrid.firstChild) {
+        projectsGrid.removeChild(projectsGrid.firstChild);
+      }
+      projectsGrid.appendChild(fragment);
+    }
+
+    function resetLetterView() {
+      if (!projectsGrid) return;
+
+      // Remove letter sections
+      projectsGrid.querySelectorAll('.letter-section').forEach(el => el.remove());
+
+      // Re-sort cards by original order (stars descending)
+      const cards = Array.from(projectsGrid.querySelectorAll('.project-card')) as HTMLElement[];
+      cards.sort((a, b) => {
+        const starsA = parseInt(a.querySelector('.text-gray-600 span')?.textContent || '0');
+        const starsB = parseInt(b.querySelector('.text-gray-600 span')?.textContent || '0');
+        return starsB - starsA;
+      });
+
+      cards.forEach(card => projectsGrid.appendChild(card));
+    }
+
+    // Search input handler
+    searchInput?.addEventListener('input', filterProjects);
+
+    // Filter button handlers
+    filterButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        // Update active state
+        filterButtons.forEach(btn => {
+          btn.classList.remove('active', 'bg-bulgaria', 'text-white');
+          btn.classList.add('bg-white', 'text-gray-700');
+        });
+
+        button.classList.add('active', 'bg-bulgaria', 'text-white');
+        button.classList.remove('bg-white', 'text-gray-700');
+
+        currentFilter = (button as HTMLElement).dataset.filter || 'all';
+        filterProjects();
+      });
+    });
+
+    // Letter navigation toggle
+    letterToggle?.addEventListener('click', () => {
+      isLetterNavActive = !isLetterNavActive;
+
+      if (isLetterNavActive) {
+        letterNav?.classList.remove('hidden');
+        letterNav?.classList.add('flex');
+        letterToggle.classList.remove('bg-white', 'text-gray-700');
+        letterToggle.classList.add('bg-bulgaria', 'text-white');
+        organizeByLetter();
+      } else {
+        letterNav?.classList.add('hidden');
+        letterNav?.classList.remove('flex');
+        letterToggle.classList.remove('bg-bulgaria', 'text-white');
+        letterToggle.classList.add('bg-white', 'text-gray-700');
+        resetLetterView();
+        filterProjects();
+      }
+    });
+
+    // Letter link click handler
+    letterNav?.querySelectorAll('.letter-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        const letter = (link as HTMLElement).dataset.letter;
+        const section = document.getElementById(`section-${letter}`);
+        if (!section) {
+          e.preventDefault();
+        }
+      });
+    });
+  });
+</script>

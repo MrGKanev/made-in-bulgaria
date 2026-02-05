@@ -1,23 +1,39 @@
 /**
- * Generates projects.json from README.md with real GitHub data
+ * Generates individual project JSON files for Astro content collections
+ * from README.md with real GitHub data.
  *
  * Fetches actual stars, descriptions, and URLs from GitHub API.
  * Supports GITHUB_TOKEN env variable for higher rate limits.
  */
 
-const fs = require('fs');
-const path = require('path');
-const https = require('https');
+import fs from 'fs';
+import path from 'path';
+import https from 'https';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // GitHub API configuration
 const GITHUB_API = 'api.github.com';
 const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
 
+// Output directory for content collection
+const CONTENT_DIR = path.join(__dirname, '..', 'src', 'content', 'projects');
+
+// Create slug from name
+function createSlug(name) {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
 // Read README.md
 function readReadme() {
   const paths = [
-    path.join(__dirname, '..', '..', 'README.md'),
-    path.join(__dirname, '..', '..', 'readme.md')
+    path.join(__dirname, '..', 'readme.md'),
+    path.join(__dirname, '..', 'README.md')
   ];
 
   for (const p of paths) {
@@ -70,7 +86,7 @@ function parseReadme(content) {
   return projects;
 }
 
-// Fetch GitHub user/org data using https module
+// Fetch GitHub data using https module (safe - no shell execution)
 function fetchGitHub(endpoint) {
   return new Promise((resolve) => {
     const headers = {
@@ -96,7 +112,7 @@ function fetchGitHub(endpoint) {
         if (res.statusCode === 200) {
           try {
             resolve(JSON.parse(data));
-          } catch (e) {
+          } catch {
             resolve(null);
           }
         } else if (res.statusCode === 403) {
@@ -139,9 +155,10 @@ async function enrichProject(project, index) {
   const repo = await getPopularRepo(github_username);
 
   // Build enriched project
+  const slug = createSlug(name);
   const enriched = {
-    id: index + 1,
     name,
+    slug,
     description: repo?.description || description,
     category,
     url: repo?.homepage || repo?.html_url || 'https://github.com/' + github_username,
@@ -158,18 +175,34 @@ async function enrichProject(project, index) {
   return enriched;
 }
 
-// Write projects.json
-function writeOutput(projects) {
-  const output = { projects };
-  const outputPath = path.join(__dirname, 'projects.json');
+// Write individual project JSON files
+function writeProjectFiles(projects) {
+  // Ensure content directory exists
+  if (!fs.existsSync(CONTENT_DIR)) {
+    fs.mkdirSync(CONTENT_DIR, { recursive: true });
+  }
 
-  fs.writeFileSync(outputPath, JSON.stringify(output, null, 2), 'utf8');
-  console.log('\nGenerated projects.json with ' + projects.length + ' projects.');
+  // Clean existing project files
+  const existingFiles = fs.readdirSync(CONTENT_DIR);
+  for (const file of existingFiles) {
+    if (file.endsWith('.json')) {
+      fs.unlinkSync(path.join(CONTENT_DIR, file));
+    }
+  }
+
+  // Write each project as individual JSON file
+  for (const project of projects) {
+    const filename = project.slug + '.json';
+    const filepath = path.join(CONTENT_DIR, filename);
+    fs.writeFileSync(filepath, JSON.stringify(project, null, 2), 'utf8');
+  }
+
+  console.log('\nGenerated ' + projects.length + ' project files in src/content/projects/');
 }
 
 // Main
 async function main() {
-  console.log('Generating projects.json from README.md...');
+  console.log('Generating project content from README.md...');
 
   if (GITHUB_TOKEN) {
     console.log('Using GitHub token for higher rate limits.');
@@ -196,10 +229,7 @@ async function main() {
   // Sort by stars descending
   enriched.sort((a, b) => b.stars - a.stars);
 
-  // Re-assign IDs after sorting
-  enriched.forEach((p, i) => p.id = i + 1);
-
-  writeOutput(enriched);
+  writeProjectFiles(enriched);
 }
 
 main().catch(err => {
