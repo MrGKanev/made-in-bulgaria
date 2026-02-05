@@ -67,6 +67,9 @@ const fullOgImage = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage}
 <!-- DNS Prefetch for performance -->
 <link rel="dns-prefetch" href="https://github.com" />
 
+<!-- RSS Feed -->
+<link rel="alternate" type="application/rss+xml" title="Made in Bulgaria RSS Feed" href="/made-in-bulgaria/rss.xml" />
+
 <!-- JSON-LD Structured Data -->
 {jsonLd && (
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

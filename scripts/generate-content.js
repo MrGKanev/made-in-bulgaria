@@ -145,6 +145,21 @@ async function getPopularRepo(username) {
   , null);
 }
 
+// Get languages for a repo
+async function getRepoLanguages(owner, repoName) {
+  const languages = await fetchGitHub('/repos/' + owner + '/' + repoName + '/languages');
+  if (!languages) return [];
+  // Return top 5 languages sorted by bytes
+  return Object.keys(languages).slice(0, 5);
+}
+
+// Get contributors count for a repo
+async function getContributorsCount(owner, repoName) {
+  const contributors = await fetchGitHub('/repos/' + owner + '/' + repoName + '/contributors?per_page=100&anon=false');
+  if (!contributors || !Array.isArray(contributors)) return 0;
+  return contributors.length;
+}
+
 // Enrich project with GitHub data
 async function enrichProject(project, index) {
   const { name, description, github_username, status, category } = project;
@@ -153,6 +168,22 @@ async function enrichProject(project, index) {
 
   // Try to find the best repo
   const repo = await getPopularRepo(github_username);
+
+  // Fetch extended data if we have a repo
+  let languages = [];
+  let contributorsCount = 0;
+  let lastCommit = null;
+
+  if (repo && repo.name) {
+    // Fetch languages and contributors in parallel
+    const [langs, contribs] = await Promise.all([
+      getRepoLanguages(github_username, repo.name),
+      getContributorsCount(github_username, repo.name)
+    ]);
+    languages = langs;
+    contributorsCount = contribs;
+    lastCommit = repo.pushed_at || null; // ISO date from GitHub
+  }
 
   // Build enriched project
   const slug = createSlug(name);
@@ -166,11 +197,15 @@ async function enrichProject(project, index) {
     github_username,
     stars: repo?.stargazers_count || 0,
     owner: github_username,
-    status
+    status,
+    // Extended data
+    lastCommit,
+    languages,
+    contributorsCount
   };
 
   // Add delay to respect rate limits
-  await new Promise(r => setTimeout(r, 100));
+  await new Promise(r => setTimeout(r, 150));
 
   return enriched;
 }

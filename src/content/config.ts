@@ -12,7 +12,11 @@ const projectsCollection = defineCollection({
     github_username: z.string(),
     stars: z.number().default(0),
     owner: z.string(),
-    status: z.enum(['active', 'inactive', 'deprecated']).default('active')
+    status: z.enum(['active', 'inactive', 'deprecated']).default('active'),
+    // Extended GitHub data
+    lastCommit: z.string().nullable().optional(), // ISO date string
+    languages: z.array(z.string()).default([]),
+    contributorsCount: z.number().default(0)
   })
 });
 

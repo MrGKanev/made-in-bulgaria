@@ -22,6 +22,9 @@ interface Props {
     stars: number;
     owner: string;
     status: 'active' | 'inactive' | 'deprecated';
+    lastCommit?: string;
+    languages: string[];
+    contributorsCount: number;
   };
 }
 
@@ -35,6 +38,23 @@ const statusConfig = {
 };
 
 const statusInfo = statusConfig[project.status] || statusConfig.active;
+
+// Format last commit date
+const formatDate = (dateStr?: string) => {
+  if (!dateStr) return 'Unknown';
+  const date = new Date(dateStr);
+  const now = new Date();
+  const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
+
+  if (diffDays === 0) return 'Today';
+  if (diffDays === 1) return 'Yesterday';
+  if (diffDays < 7) return `${diffDays} days ago`;
+  if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
+  if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
+  return `${Math.floor(diffDays / 365)} years ago`;
+};
+
+const lastCommitFormatted = formatDate(project.lastCommit);
 
 // JSON-LD with @graph for better structured data
 const jsonLd = {
@@ -125,13 +145,21 @@ const jsonLd = {
           <span class={`px-3 py-1 rounded-full text-sm ${statusInfo.class}`}>{statusInfo.label}</span>
         </div>
 
+        {project.languages && project.languages.length > 0 && (
+          <div class="flex flex-wrap gap-2 mb-4">
+            {project.languages.map((lang: string) => (
+              <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-sm font-mono">{lang}</span>
+            ))}
+          </div>
+        )}
+
         <p class="text-xl text-gray-600">{project.description}</p>
       </header>
 
       <!-- Details -->
       <section class="bg-gray-50 rounded-lg p-6 mb-8">
         <h2 class="text-xl font-semibold mb-4">Project Details</h2>
-        <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <dl class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div>
             <dt class="text-sm text-gray-500">Owner</dt>
             <dd class="font-medium">{project.owner}</dd>
@@ -147,6 +175,14 @@ const jsonLd = {
           <div>
             <dt class="text-sm text-gray-500">GitHub Stars</dt>
             <dd class="font-medium">{project.stars.toLocaleString()}</dd>
+          </div>
+          <div>
+            <dt class="text-sm text-gray-500">Last Commit</dt>
+            <dd class="font-medium">{lastCommitFormatted}</dd>
+          </div>
+          <div>
+            <dt class="text-sm text-gray-500">Contributors</dt>
+            <dd class="font-medium">{project.contributorsCount > 0 ? project.contributorsCount.toLocaleString() : 'Unknown'}</dd>
           </div>
         </dl>
       </section>
